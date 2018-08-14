@@ -20,8 +20,8 @@ namespace Gravity.Models
 
                 return new Vector2
                 {
-                    X = X / sum,
-                    Y = Y / sum,
+                    X = sum == 0 || X == 0 ? 0 : X / sum,
+                    Y = sum == 0 || Y == 0 ? 0 : Y / sum,
                 };
             }
         }
@@ -36,6 +36,11 @@ namespace Gravity.Models
             Y = y;
         }
 
+        public Vector2 Clone()
+        {
+            return MemberwiseClone() as Vector2;
+        }
+
         public static Vector2 Direction(Vector2 vector1, Vector2 vector2)
         {
             return (vector1 - vector2).Normalized;
@@ -43,7 +48,9 @@ namespace Gravity.Models
 
         public static float Distance(Vector2 vector1, Vector2 vecto2)
         {
-            return (float)Math.Sqrt(Math.Pow(vecto2.X - vector1.X, 2) + Math.Pow(vecto2.Y - vector1.Y, 2));
+            var distance = (float)Math.Sqrt(Math.Pow(vecto2.X - vector1.X, 2) + Math.Pow(vecto2.Y - vector1.Y, 2));
+
+            return float.IsNaN(distance) || float.IsInfinity(distance) ? 0 : distance;
         }
 
         public static Vector2 operator +(Vector2 vector1, Vector2 vector2)

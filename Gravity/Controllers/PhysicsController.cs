@@ -31,8 +31,24 @@ namespace Gravity.Controllers
             {
                 obj.Velocity += acceleration[obj] / obj.Mass;
 
-                obj.Position += obj.Velocity * 1000000000;
+                obj.Position += obj.Velocity * timeStep/* * 1000000000*/;
             }
+        }
+
+        public static Vector2 CalcStepFor(GravityObject obj, List<GravityObject> objects, float timeStep)
+        {
+            var acceleration = new Vector2();
+
+            foreach (var o in objects)
+            {
+                var gravityForce = MathExtensions.GravityForce(obj, o);
+
+                acceleration += Vector2.Direction(obj.Position, o.Position) * gravityForce;
+            }
+
+            obj.Velocity += acceleration / obj.Mass * timeStep;
+
+            return acceleration;
         }
     }
 }

@@ -8,6 +8,7 @@ namespace Gravity.Controllers
         public List<GravityObject> Objects { get; set; } = new List<GravityObject>();
 
         private PhysicsController physicsController = new PhysicsController();
+        public HistoryController historyController = new HistoryController();
 
         public void AddObject(GravityObject obj)
         {
@@ -16,6 +17,11 @@ namespace Gravity.Controllers
 
         public void Iterate(float timeDelay)
         {
+            foreach (var obj in Objects)
+            {
+                historyController.UpdateHistory(obj);
+            }
+
             physicsController.CalcStep(Objects, timeDelay);
         }
     }

@@ -9,5 +9,7 @@
         public float Mass { get; set; }
 
         public float Radius { get; set; }
+
+        public bool IsStatic { get; set; }
     }
 }
