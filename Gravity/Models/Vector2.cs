@@ -97,5 +97,15 @@ namespace Gravity.Models
                 Y = vector1.Y / value
             };
         }
+
+        public static bool operator ==(Vector2 vector1, Vector2 vector2)
+        {
+            return vector1.X == vector2.X && vector1.Y == vector2.Y;
+        }
+
+        public static bool operator !=(Vector2 vector1, Vector2 vector2)
+        {
+            return vector1.X != vector2.X || vector1.Y != vector2.Y;
+        }
     }
 }

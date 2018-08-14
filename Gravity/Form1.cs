@@ -136,8 +136,8 @@ namespace Gravity
 
         private Point[] CalculatePath(Point position)
         {
-            const float MAX_DISTANCE = 200;
-            const float PATH_STEP = 0.1f;
+            const float MAX_DISTANCE = 1000;
+            const float PATH_STEP = 5f;
 
             var path = new List<Point>();
 
