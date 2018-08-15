@@ -41,6 +41,11 @@ namespace Gravity.Controllers
 
             foreach (var o in objects)
             {
+                if (o == obj)
+                {
+                    continue;
+                }
+
                 var gravityForce = MathExtensions.GravityForce(obj, o);
 
                 acceleration += Vector2.Direction(obj.Position, o.Position) * gravityForce;

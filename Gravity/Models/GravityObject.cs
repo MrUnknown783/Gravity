@@ -11,5 +11,17 @@
         public float Radius { get; set; }
 
         public bool IsStatic { get; set; }
+
+        public GravityObject Clone()
+        {
+            return new GravityObject
+            {
+                Position = Position.Clone(),
+                Velocity = Velocity.Clone(),
+                Mass = Mass,
+                Radius = Radius,
+                IsStatic = IsStatic
+            };
+        }
     }
 }

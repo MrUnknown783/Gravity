@@ -105,12 +105,17 @@ namespace Gravity
         {
             launchSpeed += (e.Delta / 120) * 0.1f;
 
+            launchObject.Velocity.X = launchSpeed;
+
             Invalidate();
         }
 
         private void Form1_MouseMove(object sender, MouseEventArgs e)
         {
             mousePosition = new Point(e.X, e.Y);
+
+            launchObject.Position = new Vector2(mousePosition.X, mousePosition.Y);
+
             Invalidate();
         }
 
@@ -148,7 +153,7 @@ namespace Gravity
             {
                 path.Add(new Point((int)launchObject.Position.X, (int)launchObject.Position.Y));
 
-                var a = PhysicsController.CalcStepFor(launchObject, world.Objects, PATH_STEP);
+                PhysicsController.CalcStepFor(launchObject, world.Objects, PATH_STEP);
 
                 launchObject.Position += launchObject.Velocity * PATH_STEP;
             }
@@ -157,6 +162,36 @@ namespace Gravity
             launchObject.Velocity = new Vector2();
 
             return path.ToArray();
+        }
+
+        private List<Point[]> CalculateContiniousPath()
+        {
+            const float MAX_DISTANCE = 100;
+            const float PATH_STEP = 1f;
+
+            var objects = world.Objects.Select(x => x.Clone()).ToList();
+            //objects.Add(launchObject);
+
+            var objectsPath = new Dictionary<GravityObject, List<Point>>();
+
+            for (var i = 0f; i < MAX_DISTANCE; i += PATH_STEP)
+            {
+                foreach(var obj in objects)
+                {
+                    if (!objectsPath.ContainsKey(obj))
+                    {
+                        objectsPath.Add(obj, new List<Point>());
+                    }
+
+                    objectsPath[obj].Add(new Point((int)obj.Position.X, (int)obj.Position.Y));
+
+                    PhysicsController.CalcStepFor(obj, objects, PATH_STEP);
+
+                    obj.Position += obj.Velocity * PATH_STEP;
+                }
+            }
+
+            return objectsPath.Select(x => x.Value.ToArray()).ToList();
         }
 
         private void Form1_Paint(object sender, PaintEventArgs e)
@@ -181,10 +216,22 @@ namespace Gravity
             e.Graphics.DrawEllipse(new Pen(Color.Green), (int)(mousePosition.X - launchObject.Radius / 2), (int)(mousePosition.Y - launchObject.Radius / 2), (int)launchObject.Radius, (int)launchObject.Radius);
 
             var path = CalculatePath(mousePosition).ToArray();
+            var c = CalculateContiniousPath();
+
+            if(c.Count > 0)
+            {
+                foreach (var p in c)
+                {
+                    if (p.Length > 0)
+                    {
+                        e.Graphics.DrawCurve(new Pen(Color.Red), p);
+                    }
+                }
+            }
 
             if (path.Length > 0)
             {
-                e.Graphics.DrawLines(new Pen(Color.Red), path);
+                e.Graphics.DrawCurve(new Pen(Color.Red), path);
             }
 
             lastUpdate = DateTime.Now.TimeOfDay;

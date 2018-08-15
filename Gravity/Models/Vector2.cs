@@ -38,7 +38,11 @@ namespace Gravity.Models
 
         public Vector2 Clone()
         {
-            return MemberwiseClone() as Vector2;
+            return new Vector2
+            {
+                X = X,
+                Y = Y
+            };
         }
 
         public static Vector2 Direction(Vector2 vector1, Vector2 vector2)
